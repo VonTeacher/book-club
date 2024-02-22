@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>01 - Dom Parsing</title>
+</head>
+
+<body>
+</body>
+<script>
+  const printIds = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html')
+
+    const nodes = [doc.children[0]]
+
+    while (nodes.length) {
+      const node = nodes.shift();
+
+      if (node.getAttribute('hello') === 'world') {
+        console.log(node.getAttribute('id'))
+      }
+
+      if (node.children) {
+        nodes.push(...node.children)
+      }
+    }
+  }
+
+  // const html = '<html><head><title>01-dp</title></head><body><h1 id="h1" hello="world"></h1><div><p id="p1" hello="world"><span id="span1" hello="world"></span></p></div></body></html>'
+  const html = '<!DOCTYPE html><html><head><title>Complex Test</title></head><body><div id="div1" hello="world"><p id="p1">First paragraph with <span id="s1" hello="worldwide">a span with similar attribute value</span></p><p id="p2" Hello="world">Case-insensitive attribute name</p><p id="p3" hello= "world">Attribute value with space before equal sign</p><section id="section1" hello="world"><article><h2 id="h2" hello="world">Second level heading</h2><p>Just a paragraph</p></article><article id="article1" hello="world"><ul><li id="li1" hello="world">Item 1</li><li>Hello attribute missing</li><li hello="World">Case-sensitive attribute value</li></ul></article></section></div><footer><nav><ul><li id="nav1" hello="world">Navigation item</li><li id="nav2" hello=" world">Attribute value with leading space</li></ul></nav></footer><!-- Comments to see if they are ignored --><!-- <p hello="world">This is in a comment and should not be selected</p> --><div id="div2" class="example" data-hello="world">Attribute not exactly matching but similar</div><p id="p4" hello="world" another-attr="test">Multiple attributes, one matches</p><span id="span1" hello="world" HELLO="different">Element with the same attribute name in different cases</span></body></html>';
+
+  printIds(html)
+</script>
+
+</html>
