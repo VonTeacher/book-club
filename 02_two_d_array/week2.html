@@ -122,6 +122,40 @@
 				1. ONE .reduce()
 				2. NO OTHER loops or array helper methods
 			*/
+			// For each {} in the []...
+			// If the type is INCOME, add that value to resultsScaffold['totalIncome']
+			// If the type is EXPENSE, add that value to resultsScaffold['totalExpense']
+			// Read the CATEGORY and:
+			//   If doesn't exist on resultsScaffold['categoryCounts'], set to 1
+			//   If exists, add 1
+			// For resultsScaffold['highestAmount'], compare PAST to CURR, keep highest
+
+			const resultsScaffold = {
+				totalIncome: 0,
+				totalExpenses: 0,
+				categoryCounts: {},
+				highestAmount: 0
+			}
+
+			return transactions.reduce((acc, curr) => {
+				if (curr.type === 'income') {
+					acc.totalIncome = acc.totalIncome + curr.amount
+				} else if (curr.type === 'expense') {
+					acc.totalExpenses = acc.totalExpenses + curr.amount
+				}
+
+				if (!acc.categoryCounts[curr['category']]) {
+					acc.categoryCounts[curr['category']] = 1;
+				} else {
+					acc.categoryCounts[curr['category']] += 1;
+				}
+
+				if (curr.amount > acc.highestAmount) {
+					acc.highestAmount = curr.amount
+				}
+
+				return acc;
+			}, resultsScaffold)
 		}
 
 		const transactions = [
@@ -133,6 +167,20 @@
 			{ amount: 150, type: 'expense', category: 'Travel' },
 			{ amount: 500, type: 'expense', category: 'Misc' },
 		];
+
+		const expected2 = {
+			totalIncome: 750,
+			totalExpenses: 800,
+			categoryCounts: {
+				Food: 1,
+				Freelance: 1,
+				Misc: 1,
+				Rent: 1,
+				Salary: 2,
+				Travel: 1
+			},
+			highestAmount: 500
+		}
 
 		/* CODE THAT RUNS STUFF */
 
@@ -188,29 +236,14 @@
 		};
 
 		const callAllMethods = () => {
-			// runFunc("Problem1Loops", () => problem1Loops(matrix3), 25);
-			// runFunc("Problem1Loops", () => problem1Loops(matrix4), 68);
-			// runFunc("Problem1Loops", () => problem1Loops(matrix5), 117);
-			// runFunc("Problem1Loops", () => problem1Loops(matrix9), 697);
-			// runFunc("problem1Recursion", () => problem1Recursion(matrix3), 25);
-			// runFunc("problem1Recursion", () => problem1Recursion(matrix4), 68);
-			// runFunc("problem1Recursion", () => problem1Recursion(matrix5), 117);
-			// runFunc("problem1Recursion", () => problem1Recursion(matrix9), 697);
-
-			const expected2 = {
-				totalIncome: 750,
-				totalExpenses: 800,
-				categoryCounts: {
-					Food: 1,
-					Freelance: 1,
-					Misc: 1,
-					Rent: 1,
-					Salary: 2,
-					Travel: 1
-				},
-				highestAmount: 500
-			}
-
+			runFunc("Problem1Loops", () => problem1Loops(matrix3), 25);
+			runFunc("Problem1Loops", () => problem1Loops(matrix4), 68);
+			runFunc("Problem1Loops", () => problem1Loops(matrix5), 117);
+			runFunc("Problem1Loops", () => problem1Loops(matrix9), 697);
+			runFunc("problem1Recursion", () => problem1Recursion(matrix3), 25);
+			runFunc("problem1Recursion", () => problem1Recursion(matrix4), 68);
+			runFunc("problem1Recursion", () => problem1Recursion(matrix5), 117);
+			runFunc("problem1Recursion", () => problem1Recursion(matrix9), 697);
 			runFunc("problem2Maps", () => problem2Maps(transactions), expected2);
 			runFunc("problem2reduce", () => problem2reduce(transactions), expected2);
 		}
