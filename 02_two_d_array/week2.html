@@ -30,13 +30,13 @@
 			const layerLimit = size - currentLayer - 1;
 
 			if (currentLayer < maxLayersByIndex) {
-				const nextLayerTotal = problem1Recursion(matrix, currentLayer + 1, total);
+				const nextInnerLayerTotal = problem1Recursion(matrix, currentLayer + 1, total);
 
 				total += matrix[currentLayer][currentLayer];
 				total += matrix[currentLayer][layerLimit];
 				total += matrix[layerLimit][currentLayer];
 				total += matrix[layerLimit][layerLimit];
-				total += nextLayerTotal;
+				total += nextInnerLayerTotal;
 				total
 			} else if (currentLayer < totalLayers) { // only get here if last layer is a single, central, number
 				total += matrix[currentLayer][currentLayer]
