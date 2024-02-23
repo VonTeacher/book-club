@@ -118,18 +118,6 @@
 		}
 
 		function problem2reduce(transactions) {
-			/* CONSTRAINTS
-				1. ONE .reduce()
-				2. NO OTHER loops or array helper methods
-			*/
-			// For each {} in the []...
-			// If the type is INCOME, add that value to resultsScaffold['totalIncome']
-			// If the type is EXPENSE, add that value to resultsScaffold['totalExpense']
-			// Read the CATEGORY and:
-			//   If doesn't exist on resultsScaffold['categoryCounts'], set to 1
-			//   If exists, add 1
-			// For resultsScaffold['highestAmount'], compare PAST to CURR, keep highest
-
 			const resultsScaffold = {
 				totalIncome: 0,
 				totalExpenses: 0,
@@ -139,9 +127,9 @@
 
 			return transactions.reduce((acc, curr) => {
 				if (curr.type === 'income') {
-					acc.totalIncome = acc.totalIncome + curr.amount
+					acc.totalIncome += curr.amount
 				} else if (curr.type === 'expense') {
-					acc.totalExpenses = acc.totalExpenses + curr.amount
+					acc.totalExpenses += curr.amount
 				}
 
 				if (!acc.categoryCounts[curr['category']]) {
