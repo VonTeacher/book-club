@@ -6,6 +6,7 @@
 
 <BODY>
 	<script>
+		// START Problem 1
 		function problem1Loops(matrix) {
 			let total = 0;
 			const size = matrix.length;
@@ -76,23 +77,13 @@
 			[64, 65, 66, 67, 68, 69, 70, 71, 72],
 			[73, 74, 75, 76, 77, 78, 79, 80, 81]
 		];
+		// END Problem 1
 
-		/* Problem 2
-			Refactor the code below to use only one reduce method and no other loops or array
-			helper methods.
-
-			Put your code in the empty problem2reduce function below.
-		*/
+		// START Problem 2
 		function problem2Maps(transactions) {
-			const totalIncome = transactions
-				.filter(t => t.type === 'income')
-				.map(t => t.amount)
-				.reduce((acc, curr) => acc + curr, 0);
+			const totalIncome = transactions.filter(t => t.type === 'income').map(t => t.amount).reduce((acc, curr) => acc + curr, 0);
 
-			const totalExpenses = transactions
-				.filter(t => t.type === 'expense')
-				.map(t => t.amount)
-				.reduce((acc, curr) => acc + curr, 0);
+			const totalExpenses = transactions.filter(t => t.type === 'expense').map(t => t.amount).reduce((acc, curr) => acc + curr, 0);
 
 			const categories = transactions.map(t => t.category);
 
@@ -169,6 +160,7 @@
 			},
 			highestAmount: 500
 		}
+		// END Problem 2
 
 		/* CODE THAT RUNS STUFF */
 
