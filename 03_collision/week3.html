@@ -64,13 +64,15 @@
     let player = {
       x: 40,
       y: 900,
-      acceleration: { x: 0, y: 0 },
+      accel: { x: 0, y: 0 },
       v: { x: 0, y: 0 },
     };
 
     let g = .01;
     let tv = 1;
     let jumping = false;
+
+    // console.log('Map Array Size: WIDE: ', map1[0].length, 'TALL: ', map1.length);
 
     function gameLoop() {
       ++fps;
@@ -92,16 +94,30 @@
         x: player.x + player.v.x,
         y: player.y + player.v.y,
         v: {
-          x: player.v.x + player.acceleration.x,
-          y: (player.v.y + player.acceleration.y) > tv ? tv : player.v.y + player.acceleration.y,
+          x: player.v.x + player.accel.x,
+          y: (player.v.y + player.accel.y) > tv ? tv : player.v.y + player.accel.y,
         },
-        acceleration: {
+        accel: {
           x: 0,
-          y: player.acceleration.y + g,
+          y: player.accel.y + g,
         },
       }
 
       //************ COLLISION CODE ***********
+      // file:///Users/vw/Play/book-club/03_collision/week3.html
+      /*
+        The player starts at x = 40, y = 900 on a canvas that is 1200 wide by 1000 tall
+        The player, not having any support below them, begins to accelerate toward the bottom of the screen
+        If there is an 'x' cell, the player should stop above it and not fall through
+      */
+      // x = 40, y = 900
+      let x = parseInt(parseInt((next.x / map1[0].length) * map1[0].length) / 10);
+      let y = parseInt(parseInt((next.y / map1.length) * map1.length) / 10);
+
+      if (map1[y + 1][x] === 'x') {
+        next.v.y = 0;
+      }
+
 
       //****************************************
 
@@ -121,7 +137,7 @@
       switch (event.keyCode) {
         case 38:
           if (!jumping) {
-            player.acceleration.y = -.3;
+            player.accel.y = -.3;
             jumping = true;
           }
           break;
@@ -145,7 +161,7 @@
       }
     });
 
-    setInterval(gameLoop, 1);
+    setInterval(gameLoop, 12);
     setInterval(timer, 1000);
 
   </SCRIPT>
