@@ -1,151 +1,154 @@
 <HTML>
+
 <HEAD>
-<TITLE>Week 3</TITLE>
+	<TITLE>Week 3</TITLE>
 </HEAD>
+
 <BODY>
-<script src="map1.js"></script>
-<canvas id="canvas" width="1200" height="1000" ></canvas>
-<div id="fps"></div>
+	<script src="map1.js"></script>
+	<canvas id="canvas" width="1200" height="1000"></canvas>
+	<div id="fps"></div>
 
-<SCRIPT>
-/*
+	<SCRIPT>
+		/*
 
-Welcome to week 3
+		Welcome to week 3
 
-This week, we're diving into the creation of a tile platformer game. Think Mario 1 or Metroid 1
+		This week, we're diving into the creation of a tile platformer game. Think Mario 1 or Metroid 1
 
-Game Map Structure:
+		Game Map Structure:
 
-Our game world is constructed from a 2D array, where each element represents a tile in the map:
-- An 'x' denotes a solid block, a surface on which the player can stand.
-- An 'o' represents an empty space, through which the player can move freely.
+		Our game world is constructed from a 2D array, where each element represents a tile in the map:
+		- An 'x' denotes a solid block, a surface on which the player can stand.
+		- An 'o' represents an empty space, through which the player can move freely.
 
-For example, the array below:
+		For example, the array below:
 
-[
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o'],
-    ['x', 'x', 'x']
-]
+		[
+				['o', 'o', 'o'],
+				['o', 'o', 'o'],
+				['x', 'x', 'x']
+		]
 
-Creates a map with a solid floor at the bottom, offering a clear visual foundation for our game's layout.
+		Creates a map with a solid floor at the bottom, offering a clear visual foundation for our game's layout.
 
-Starter Code Overview:
+		Starter Code Overview:
 
-We provide you with starter code that sets up the essential elements:
-- A canvas to display our game.
-- A game loop to keep the action moving.
-- Map reading functionality that draws our game world.
-- A map (map1.js)
-- A player character, complete with basic physics, and keyboard control to navigate through this world.
+		We provide you with starter code that sets up the essential elements:
+		- A canvas to display our game.
+		- A game loop to keep the action moving.
+		- Map reading functionality that draws our game world.
+		- A map (map1.js)
+		- A player character, complete with basic physics, and keyboard control to navigate through this world.
 
-Your Mission:
+		Your Mission:
 
-Your task is to enhance our game with collision detection. Ensure the player:
-1. Does not fall through the blocks but lands firmly on them.
-2. Can jump from one block to another.
-3. Implement your logic in the "COLLISION CODE" section marked bellow. Do not modify any other code.
+		Your task is to enhance our game with collision detection. Ensure the player:
+		1. Does not fall through the blocks but lands firmly on them.
+		2. Can jump from one block to another.
+		3. Implement your logic in the "COLLISION CODE" section marked bellow. Do not modify any other code.
 
-Extra credit: Make another version and modify/add anything you like
+		Extra credit: Make another version and modify/add anything you like
 
-Refer to the included video for a clearer understanding of how these interactions should look and feel in the final game.
+		Refer to the included video for a clearer understanding of how these interactions should look and feel in the final game.
 
-Happy Coding!
+		Happy Coding!
 
-*/
+		*/
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const tileSize = 10;
+		const canvas = document.getElementById("canvas");
+		const ctx = canvas.getContext("2d");
+		const tileSize = 10;
 
-let fps = 0;
-let player = {
-	x:40,
-	y:900,
-	acceleration: {x:0, y:0},
-	v:{x:0, y:0},
-};
+		let fps = 0;
+		let player = {
+			x: 40,
+			y: 900,
+			acceleration: { x: 0, y: 0 },
+			v: { x: 0, y: 0 },
+		};
 
-let g = .01;
-let tv = 1;
-let jumping = false;
+		let g = .01;
+		let tv = 1;
+		let jumping = false;
 
-function gameLoop() {
-	++fps;
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+		function gameLoop() {
+			++fps;
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	// Draw Map
-	ctx.fillStyle = "#FF0000";
-	for (let y = 0; y < map1.length; ++y) {
-		for (let x = 0; x < map1[y].length; ++x) {
-			if (map1[y][x] === 'x') {
-				ctx.fillRect(x*tileSize, (y*tileSize), tileSize, tileSize);
+			// Draw Map
+			ctx.fillStyle = "#FF0000";
+
+			for (let y = 0; y < map1.length; ++y) {
+				for (let x = 0; x < map1[y].length; ++x) {
+					if (map1[y][x] === 'x') {
+						ctx.fillRect(x * tileSize, (y * tileSize), tileSize, tileSize);
+					}
+				}
 			}
+
+			// Calculate next player position and speeds
+			const next = {
+				x: player.x + player.v.x,
+				y: player.y + player.v.y,
+				v: {
+					x: player.v.x + player.acceleration.x,
+					y: (player.v.y + player.acceleration.y) > tv ? tv : player.v.y + player.acceleration.y,
+				},
+				acceleration: {
+					x: 0,
+					y: player.acceleration.y + g,
+				},
+			}
+
+			//************ COLLISION CODE ***********
+
+			//****************************************
+
+			player = next;
+			ctx.fillStyle = "#FF00FF";
+			ctx.fillRect(player.x, (player.y), tileSize, tileSize);
 		}
-	}
 
-	// Calculate next player position and speeds
-	const next = {
-		x: player.x + player.v.x,
-		y: player.y + player.v.y,
-		v: {
-			x: player.v.x + player.acceleration.x,
-			y: (player.v.y + player.acceleration.y) > tv ? tv : player.v.y + player.acceleration.y,
-		},
-		acceleration: {
-			x: 0,
-			y: player.acceleration.y + g,
-		},
-	}
+		const fpsElem = document.getElementById('fps');
 
-	//************ COLLISION CODE ***********
-
-	//****************************************
-
-	player = next;
-	ctx.fillStyle = "#FF00FF";
-	ctx.fillRect(player.x, (player.y), tileSize, tileSize);
-}
-
-
-const fpsElem = document.getElementById('fps');
-function timer(){
-	fpsElem.innerHTML = "fps: " + fps;
-	fps = 0;
-}
-
-document.addEventListener('keydown', function(event) {
-switch(event.keyCode){
-	case 38:
-		if(!jumping){
-			player.acceleration.y = -.3;
-			jumping = true;
+		function timer() {
+			fpsElem.innerHTML = "fps: " + fps;
+			fps = 0;
 		}
-	break;
 
-	case 37:
-		player.v.x = -1;
-		break;
-	case 39:
-		player.v.x = 1;
-		break;
-}
-});
+		document.addEventListener('keydown', function (event) {
+			switch (event.keyCode) {
+				case 38:
+					if (!jumping) {
+						player.acceleration.y = -.3;
+						jumping = true;
+					}
+					break;
+				case 37:
+					player.v.x = -1;
+					break;
+				case 39:
+					player.v.x = 1;
+					break;
+			}
+		});
 
-document.addEventListener('keyup', function(event) {
-	switch(event.keyCode){
-		case 37:
-			player.v.x = 0;
-			break;
-		case 39:
-			player.v.x = 0;
-			break;
-	}
-});
+		document.addEventListener('keyup', function (event) {
+			switch (event.keyCode) {
+				case 37:
+					player.v.x = 0;
+					break;
+				case 39:
+					player.v.x = 0;
+					break;
+			}
+		});
 
-setInterval(gameLoop, 1);
-setInterval(timer, 1000);
+		setInterval(gameLoop, 1);
+		setInterval(timer, 1000);
 
-</SCRIPT>
+	</SCRIPT>
 </BODY>
+
 </HTML>
