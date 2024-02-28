@@ -46,9 +46,9 @@
 		}
 
 		const matrix3 = [
-			[1, 2, 3], // size: 3 x 3
-			[4, 5, 6], // totalLayers: 2 (outer, inner)
-			[7, 8, 9]  // maxLayersByIndex: 1 (outer 0, inner 1)
+			[1, 2, 3],
+			[4, 5, 6],
+			[7, 8, 9]
 		];
 
 		const matrix4 = [
@@ -117,10 +117,15 @@
 			}
 
 			return transactions.reduce((acc, curr) => {
-				if (curr.type === 'income') {
-					acc.totalIncome += curr.amount
-				} else if (curr.type === 'expense') {
-					acc.totalExpenses += curr.amount
+				switch (curr.type) {
+					case 'income':
+						acc.totalIncome += curr.amount
+						break;
+					case 'expense':
+						acc.totalExpenses += curr.amount
+						break;
+					default:
+						break;
 				}
 
 				if (!acc.categoryCounts[curr['category']]) {
