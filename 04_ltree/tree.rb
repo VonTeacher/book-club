@@ -56,31 +56,40 @@ $tree_dataset = [
 # Input: path - a string representing the path of IDs from the root to a specific node.
 # Output: An array of hashes representing the children of the node identified by path ORDERED BY POSITION.
 
-def self_and_descendants(path) # O(n)
-  results = []
+
+
+
+ # This solution looks at every item and pushes items with matching roots to sad_results
+def self_and_descendants(path)
+  sad_results = []
 
   $tree_dataset.each do |item|
     if item[:path].include?(path.to_s)
-      results << item[:path]
+      sad_results << item[:path]
     end
   end
-  results
+  sad_results
 end
 
+
+
+# Slow and messy because I don't want to mess with the original node list
+# Would we ideally have parent/child values on nodes so we could treat them more like linked items?
 def move_node(current_path, new_path, position)
   throw('ID must stay the same') if current_path.split(".").last != new_path.split(".").last
 
   new_set = []
 
   $tree_dataset.each do |item|
+    # anything matching current_path
     if item[:path].include?(current_path)
       new_node = { path: item[:path].gsub(current_path, new_path), position: position }
       new_set << new_node
-
+    # gotta shift the other nodes on the new_path level (x.y in this case)
     elsif item[:path].split(".").length == new_path.split(".").length
       moved_node = { path: item[:path], position: item[:position] + 1 }
       new_set << moved_node
-
+    # don't care about sub-levels
     else
       new_set << item
     end
@@ -88,17 +97,22 @@ def move_node(current_path, new_path, position)
   new_set
 end
 
+
+
 def children(path)
   child_set = []
 
-  $tree_dataset.select do |item|
+  $tree_dataset.each do |item|
+    # children have one more node length than parent path
+    # '1' as parent has children with only '1.x' path
     if (item[:path].split(".").length == path.split(".").length + 1)
       child_set[item[:position]] = item
     end
   end
-
   child_set
 end
+
+
 
 # Testing code
 raise 'self_and_descendants failed' unless self_and_descendants('1.2').sort == ["1.2", "1.2.22", "1.2.22.10", "1.2.22.10.14", "1.2.7"]
