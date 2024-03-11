@@ -40,24 +40,6 @@ $tree_dataset = [
 # Output: A list of IDs for the node identified by path and all its descendants, starting with the ID of the
 # node specified by path, followed by the IDs of its descendants in no particular order.
 # If the path does not lead to a valid node, return an empty list.
-
-# 2. move_node
-# Signature: moveNode(currentPath: string, newPath: string): Array<Hash>
-# Operation: Moves the node identified by currentPath to the path identified by newPath.
-# Inputs:
-# currentPath - the current path string that identifies the node to be moved.
-# newPath - the path string that identifies the new path of the node.
-# position - the new position of the node relative to it's new siblings.
-# Output: An array of hashes representing the new tree structure after the move operation.
-# array should contain the path and position of the node.
-
-# 3. children
-# Signature: children(path: string): Array<Hash>
-# Input: path - a string representing the path of IDs from the root to a specific node.
-# Output: An array of hashes representing the children of the node identified by path ORDERED BY POSITION.
-
-
-
 def self_and_descendants(path)
   # sad_results = []
   # $tree_dataset.each do |item|
@@ -72,28 +54,41 @@ def self_and_descendants(path)
   end.map { |e| e[:path] }
 end
 
+# 2. move_node
+# Signature: moveNode(currentPath: string, newPath: string): Array<Hash>
+# Operation: Moves the node identified by currentPath to the path identified by newPath.
+# Inputs:
+# currentPath - the current path string that identifies the node to be moved.
+# newPath - the path string that identifies the new path of the node.
+# position - the new position of the node relative to it's new siblings.
+# Output: An array of hashes representing the new tree structure after the move operation.
+# array should contain the path and position of the node.
 def move_node(current_path, new_path, position)
   throw('ID must stay the same') if current_path.split(".").last != new_path.split(".").last
 
-  new_set = []
+  moved_set = []
 
   $tree_dataset.each do |item|
     # anything matching current_path
     if item[:path].include?(current_path)
       new_node = { path: item[:path].gsub(current_path, new_path), position: position }
-      new_set << new_node
-    # gotta shift the other nodes on the new_path level (x.y in this case)
+      moved_set << new_node
+    # gotta shift the other nodes' positions on the new_path level (x.y in this case)
     elsif item[:path].split(".").length == new_path.split(".").length
       moved_node = { path: item[:path], position: item[:position] + 1 }
-      new_set << moved_node
+      moved_set << moved_node
     # don't care about sub-levels
     else
-      new_set << item
+      moved_set << item
     end
   end
-  new_set
+  moved_set
 end
 
+# 3. children
+# Signature: children(path: string): Array<Hash>
+# Input: path - a string representing the path of IDs from the root to a specific node.
+# Output: An array of hashes representing the children of the node identified by path ORDERED BY POSITION.
 def children(path)
   # child_set = []
   # $tree_dataset.each do |item|
