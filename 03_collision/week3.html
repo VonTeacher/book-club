@@ -72,13 +72,9 @@
     let tv = 1;
     let jumping = false;
 
-    // console.log('Map Array Size: WIDE: ', map1[0].length, 'TALL: ', map1.length);
-
     function gameLoop() {
       ++fps;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw Map
       ctx.fillStyle = "#FF0000";
 
       for (let y = 0; y < map1.length; ++y) {
@@ -89,7 +85,13 @@
         }
       }
 
-      // Calculate next player position and speeds
+      //************ COLLISION CODE ***********
+      // file:///Users/vw/Play/book-club/03_collision/week3.html
+      /*
+        The player starts at x = 40, y = 900 on a canvas that is 1200 wide by 1000 tall
+        The player, not having any support below them, begins to accelerate toward the bottom of the screen
+        If there is an 'x' cell, the player should stop above it and not fall through
+      */
       const next = {
         x: player.x + player.v.x,
         y: player.y + player.v.y,
@@ -103,26 +105,27 @@
         },
       }
 
-      //************ COLLISION CODE ***********
-      // file:///Users/vw/Play/book-club/03_collision/week3.html
-      /*
-        The player starts at x = 40, y = 900 on a canvas that is 1200 wide by 1000 tall
-        The player, not having any support below them, begins to accelerate toward the bottom of the screen
-        If there is an 'x' cell, the player should stop above it and not fall through
-      */
-      // x = 40, y = 900
-      let x = parseInt(parseInt((next.x / map1[0].length) * map1[0].length) / 10);
-      let y = parseInt(parseInt((next.y / map1.length) * map1.length) / 10);
+      let x = next.x;
+      let y = next.y;
 
-      if (map1[y + 1][x] === 'x') {
+      let x_ten = parseInt(Math.ceil(parseInt((next.x / map1[0].length) * map1[0].length) / tileSize));
+      let y_ten = parseInt(Math.floor(parseInt((next.y / map1.length) * map1.length) / tileSize));
+
+      const squareBelow = map1[y_ten + 1][x_ten]
+      const squareAbove = map1[y_ten - 1][x_ten]
+
+      // no matter what, if the sB is an x, stop falling
+      // no matter what, if the sA is an x, stop jumping
+
+      if (!jumping && squareBelow == 'x') {
         next.v.y = 0;
+        jumping = false;
       }
-
 
       //****************************************
 
       player = next;
-      ctx.fillStyle = "#FF00FF";
+      ctx.fillStyle = "#0000FF";
       ctx.fillRect(player.x, (player.y), tileSize, tileSize);
     }
 
@@ -161,7 +164,7 @@
       }
     });
 
-    setInterval(gameLoop, 12);
+    setInterval(gameLoop, 1);
     setInterval(timer, 1000);
 
   </SCRIPT>
