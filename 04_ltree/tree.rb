@@ -41,14 +41,6 @@ $tree_dataset = [
 # node specified by path, followed by the IDs of its descendants in no particular order.
 # If the path does not lead to a valid node, return an empty list.
 def self_and_descendants(path)
-  # sad_results = []
-  # $tree_dataset.each do |item|
-  #   if item[:path].include?(path.to_s)
-  #     sad_results << item[:path]
-  #   end
-  # end
-  # sad_results
-
   $tree_dataset.select do |item|
     item[:path].include?(path.to_s)
   end.map { |e| e[:path] }
