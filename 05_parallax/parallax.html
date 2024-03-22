@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="640" height="360"></canvas>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 640, 360);
+
+    let stars = [];
+
+    const createStar = (limit) => {
+      if (stars.length < limit) {
+        let starSize = Math.ceil(Math.random() * 3)
+
+        let star = {
+          x: Math.ceil(Math.random() * 640),
+          y: Math.ceil(Math.random() * 360),
+          horz: starSize,
+          vert: starSize,
+          speed: starSize / 10
+        }
+        stars.push(star);
+      }
+    }
+
+    const plotStar = () => {
+      for (i = 0; i < stars.length; i++) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(stars[i].x, stars[i].y, stars[i].horz, stars[i].vert);
+      }
+    }
+
+    const updateStar = () => {
+      for (i = 0; i < stars.length; i++) {
+        stars[i].y += stars[i].speed * 1.5;
+      }
+    }
+
+    const nukeStar = () => {
+      for (i = 0; i < stars.length; i++) {
+        if (stars[i].y > canvas.height) {
+          stars[i].y = 0;
+        }
+      }
+    }
+
+    const loop = () => {
+      ctx.fillStyle = "black"
+      ctx.fillRect(0, 0, 640, 360);
+      createStar(100);
+      updateStar();
+      nukeStar();
+      plotStar();
+      window.requestAnimationFrame(loop);
+    }
+
+    window.requestAnimationFrame(loop);
+  </script>
+</body>
+
+</html>
+
+<!--
+  file:///Users/vw/Play/book-club/05_parallax/parallax.html
+-->
