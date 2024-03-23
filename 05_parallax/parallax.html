@@ -16,21 +16,21 @@
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, 640, 360);
 
+    const limit = 1000;
+    const sizes = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3]
     let stars = [];
 
-    const createStar = (limit) => {
-      if (stars.length < limit) {
-        let starSize = Math.ceil(Math.random() * 3)
+    const createStar = () => {
+      let starSize = sizes[Math.floor(Math.random() * sizes.length)]
 
-        let star = {
-          x: Math.ceil(Math.random() * 640),
-          y: Math.ceil(Math.random() * 360),
-          horz: starSize,
-          vert: starSize,
-          speed: starSize / 10
-        }
-        stars.push(star);
+      let star = {
+        x: Math.ceil(Math.random() * 640),
+        y: Math.ceil(Math.random() * 360),
+        horz: starSize,
+        vert: starSize,
+        speed: starSize / 10
       }
+      stars.push(star);
     }
 
     const plotStar = () => {
@@ -42,7 +42,8 @@
 
     const updateStar = () => {
       for (i = 0; i < stars.length; i++) {
-        stars[i].y += stars[i].speed * 1.5;
+        stars[i].y += stars[i].speed;
+        stars[i].x += stars[i].speed;
       }
     }
 
@@ -51,13 +52,19 @@
         if (stars[i].y > canvas.height) {
           stars[i].y = 0;
         }
+        if (stars[i].x > canvas.width) {
+          stars[i].x = 0;
+        }
       }
+    }
+
+    while (stars.length < limit) {
+      createStar();
     }
 
     const loop = () => {
       ctx.fillStyle = "black"
       ctx.fillRect(0, 0, 640, 360);
-      createStar(100);
       updateStar();
       nukeStar();
       plotStar();
