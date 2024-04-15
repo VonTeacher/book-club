@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 7</title>
+<style>
+  body, html { margin: 0; padding: 0; overflow: hidden; }
+  canvas { display: block; background: #f0f0f0; }
+</style>
+<script>
+  /*
+In the following code, a blue square moves across a canvas in response to arrow key inputs.
+The movement is frame-based, meaning the square moves by a fixed distance each frame, regardless of
+the frame rate. This can lead to inconsistent movement speeds on different devices or under different loads.
+
+Your task is to modify the code to implement time-based animation. In time-based animation, the movement
+of the square will depend on the amount of time that has passed since the last frame. This approach ensures
+consistent movement speed across different devices and frame rates.
+
+You may use javascript documentaion and math (non code) resources but nothing else.
+You may not use any external libraries.
+*/
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let squareSize = 50;
+    let x = (window.innerWidth - squareSize) / 2;
+    let y = (window.innerHeight - squareSize) / 2;
+    let dx = 0;
+    let dy = 0;
+    const speed = 5;
+
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawSquare();
+    }
+
+    function updatePosition() {
+      x += dx;
+      y += dy;
+      drawSquare();
+      requestAnimationFrame(updatePosition);
+    }
+
+    function drawSquare() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(x, y, squareSize, squareSize);
+    }
+
+    document.addEventListener('keydown', (event) => {
+      switch (event.key) {
+        case 'ArrowUp': dy = -speed; break;
+        case 'ArrowDown': dy = speed; break;
+        case 'ArrowLeft': dx = -speed; break;
+        case 'ArrowRight': dx = speed; break;
+      }
+    });
+
+    document.addEventListener('keyup', (event) => {
+      switch (event.key) {
+        case 'ArrowUp':
+        case 'ArrowDown': dy = 0; break;
+        case 'ArrowLeft':
+        case 'ArrowRight': dx = 0; break;
+      }
+    });
+
+    resizeCanvas();
+    updatePosition();
+  });
+</script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+</html>
