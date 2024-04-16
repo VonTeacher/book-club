@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Collision Simulation</title>
+<style>
+    canvas {
+        display: block;
+        margin: auto;
+        background-color: #f0f0f0;
+    }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+/*
+The code below creates a red square and a blue circle that move towards each
+other on a 2D plane. Upon collision, both objects reverse their velocities.
+The task is to add logic to include the mass of each object into the collision
+response, making the objects speed after collision based on their mass and
+velocity. We are assuming a frictionless environment and a perfectly elastic
+collision.
+
+IMPORTANT:
+Do not use external libraries or physics engines for this task. No AI tools.
+You may use JavaScript documentation and math resources.
+
+Tasks:
+1. Calculate the final velocities of both the square and the circle using
+   the conservation of momentum and the conservation of kinetic energy.
+   Use the following equations where m1 and m2 are the masses, v1 and v2
+   are the initial velocities, and v1' and v2' are the velocities after
+   the collision:
+
+   v1' = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2)
+   v2' = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2)
+
+2. Implement this calculation in the collision detection part of the code.
+   Ensure the velocities are updated based on the calculated results.
+
+3. Test the simulation to ensure that it behaves realistically. The lighter
+   object should have a greater change in velocity compared to the heavier
+   object.
+
+Extra Credit:
+- Implement a more complex collision response, such as one that takes into
+  account the angle of collision and the coefficient of restitution.
+  Make sure to save your work before attempting the extra credit.
+*/
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let square = {
+    x: 50,
+    y: canvas.height / 2 - 25,
+    width: 50,
+    height: 50,
+    vx: 200,
+    vy: 0,
+    m: 25
+};
+
+let circle = {
+    x: canvas.width - 150,
+    y: canvas.height / 2,
+    radius: 100,
+    vx: -200,
+    vy: 0,
+    m: 100
+};
+
+let lastTime = 0;
+
+function drawSquare() {
+    ctx.fillStyle = 'red';
+    ctx.fillRect(square.x, square.y, square.width, square.height);
+}
+
+function drawCircle() {
+    ctx.fillStyle = 'blue';
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function update(time) {
+    let deltaTime = (time - lastTime) / 1000;
+    lastTime = time;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawSquare();
+    drawCircle();
+    square.x += square.vx * deltaTime;
+    circle.x += circle.vx * deltaTime;
+
+    let squareCenterX = square.x + square.width / 2;
+    let squareCenterY = square.y + square.height / 2;
+    let circleCenterX = circle.x;
+    let circleCenterY = circle.y;
+
+    let dx = circleCenterX - squareCenterX;
+    let dy = circleCenterY - squareCenterY;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    // if the edges of the two objects touch
+    if (distance < square.width / 2 + circle.radius) {
+        let square_mass = square.width ** 2;
+        let circle_mass = Math.PI * ( circle.radius ** 2 )
+
+        square.vx = ((square_mass - circle_mass) * square.vx + 2 * circle_mass * circle.vx) / (square_mass + circle_mass)
+        circle.vx = ((circle_mass - square_mass) * circle.vx + 2 * square_mass * square.vx) / (square_mass + circle_mass)
+    }
+
+    requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
+</script>
+</body>
+</html>
