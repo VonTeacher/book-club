@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Collision Simulation</title>
+<style>
+    canvas {
+        display: block;
+        margin: auto;
+        background-color: #f0f0f0;
+    }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth - 20;
+canvas.height = window.innerHeight - 20;
+
+class Shape {
+  constructor(pos_x, pos_y) {
+    this.pos_x = pos_x;
+    this.pox_y = pos_y;
+
+    this.vxi = 0;
+    this.vyi = 0;
+  }
+}
+
+class Circle extends Shape {
+  constructor(pos_x, pos_y, radius, vx_i) {
+    super();
+    this.color = 'blue';
+
+    this.mass = Math.PI * (radius ** 2)
+
+    this.pos_x = pos_x;
+    this.pos_y = pos_y;
+    this.radius = radius;
+
+    this.vxi = vx_i;
+    this.vyi = 0;
+
+    this.vx = 0;
+    this.vy = 0;
+  }
+}
+
+class Square extends Shape {
+  constructor(pos_x, pos_y, width, vx_i) {
+    super();
+    this.color = 'red';
+
+    this.mass = width ** 2;
+
+    this.pos_x = pos_x;
+    this.pos_y = pos_y;
+    this.width = width;
+
+    this.vxi = vx_i;
+    this.vyi = 0;
+
+    this.vx = 0;
+    this.vy = 0;
+  }
+}
+
+let square = new Square(50, canvas.height / 2 - 25, 50, 123);
+let circle = new Circle(canvas.width - 150, canvas.height / 2, 100, -12);
+
+let lastTime = 0;
+
+function drawSquare() {
+  ctx.fillStyle = 'red';
+  ctx.fillRect(square.pos_x, square.pos_y, square.width, square.width);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 10pt Courier';
+  ctx.fillText(`${Math.floor(square.vx)}`, square.pos_x, square.pos_y + 12, square.width);
+  ctx.fillStyle = 'black';
+  ctx.font = 'bold 8pt Courier';
+  ctx.fillText(`x: ${Math.floor(square.pos_x)}`, square.pos_x, square.pos_y + 24)
+  ctx.fillText(`y: ${Math.floor(square.pos_y)}`, square.pos_x, square.pos_y + 36)
+}
+
+function drawCircle() {
+  ctx.fillStyle = 'blue';
+  ctx.beginPath();
+  ctx.arc(circle.pos_x, circle.pos_y, circle.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 10pt Courier';
+  ctx.fillText(`${Math.floor(circle.vx)}`, circle.pos_x - square.width / 2, circle.pos_y + square.width / 2);
+  ctx.fillStyle = 'black';
+  ctx.font = 'bold 8pt Courier';
+  ctx.fillText(`x: ${Math.floor(circle.pos_x)}`, circle.pos_x - square.width / 2, circle.pos_y + square.width / 2 + 12)
+  ctx.fillText(`y: ${Math.floor(circle.pos_y)}`, circle.pos_x - square.width / 2, circle.pos_y + square.width / 2 + 24)
+
+}
+
+function update(time) {
+  let deltaTime = (time - lastTime) / 1000;
+  lastTime = time;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawSquare();
+  drawCircle();
+
+  square.vx = square.vx ? square.vx : square.vxi;
+  circle.vx = circle.vx ? circle.vx : circle.vxi;
+
+  square.pos_x += square.vx * deltaTime;
+  circle.pos_x += circle.vx * deltaTime;
+
+  let squareCenterX = square.pos_x + square.width / 2;
+  let squareCenterY = square.pos_y + square.width / 2;
+  let circleCenterX = circle.pos_x;
+  let circleCenterY = circle.pos_y;
+
+  let dx = circleCenterX - squareCenterX;
+  let dy = circleCenterY - squareCenterY;
+  let distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance < square.width / 2 + circle.radius) {
+    square.vx0 = square.vx;
+    circle.vx0 = circle.vx;
+
+    square.vx = ((square.mass - circle.mass) * square.vx0 + 2 * circle.mass * circle.vx0) / (square.mass + circle.mass)
+    circle.vx = ((circle.mass - square.mass) * circle.vx0 + 2 * square.mass * square.vx0) / (square.mass + circle.mass)
+  }
+
+  requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
+</script>
+</body>
+</html>
