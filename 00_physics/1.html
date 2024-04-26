@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Collision Simulation</title>
+<style>
+  body { background-color: #111; margin: 0; }
+  canvas {
+    background-color: #000;
+    border: 1px solid rgb(50, 50, 50);
+    display: block;
+    margin: auto;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 800;
+canvas.height = 400;
+
+let square = {
+  px: 100,
+  py: 100,
+  width: 50
+}
+
+function drawGrid(ctx, w, h, step) {
+  ctx.beginPath();
+
+  for (let x = 0; x < w; x += step) {
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
+  }
+
+  ctx.strokeStyle = 'rgb(112, 112, 112)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  for (let y = 0; y < h; y += step) {
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+  }
+
+  ctx.strokeStyle = 'rgb(50, 50, 50)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+function drawSquare(square) {
+  ctx.fillStyle = 'green';
+  ctx.fillRect(square.px, square.py, square.width, square.width)
+}
+
+let lastTime = 0;
+
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+let upPressed = false;
+let downPressed = false;
+let leftPressed = false;
+let rightPressed = false;
+let pressed = false;
+
+function keyDownHandler(event) {
+  if (pressed) return;
+
+  switch(event.keyCode) {
+    case 38: upPressed = true; break;
+    case 40: downPressed = true; break;
+    case 37: leftPressed = true; break;
+    case 39: rightPressed = true; break;
+  }
+}
+
+function keyUpHandler(event) {
+  pressed = false;
+}
+
+function update(time) {
+  let deltaTime = (time - lastTime) / 1000;
+  lastTime = time;
+
+  if (leftPressed) {
+    pressed = true;
+    square.px <= 0
+      ? square.px = 0
+      : square.px -= square.width;
+    leftPressed = false;
+  }
+
+  if (rightPressed) {
+    pressed = true;
+    square.px + square.width >= canvas.width
+      ? square.px = canvas.width - square.width
+      : square.px += square.width;
+    rightPressed = false;
+  }
+
+  if (upPressed) {
+    pressed = true;
+    upPressed = false;
+    square.py <= 0
+      ? square.py = 0
+      : square.py -= square.width;
+  }
+
+  if (downPressed) {
+    pressed = true;
+    downPressed = false;
+    square.py + square.width >= canvas.height
+      ? square.py = canvas.height - square.width
+      : square.py += square.width;
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid(ctx, canvas.width, canvas.height, 25, 25);
+  drawSquare(square);
+
+  requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
+</script>
+</body>
+</html>
